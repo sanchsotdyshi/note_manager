@@ -2,18 +2,18 @@ from django.shortcuts import render, get_object_or_404
 from django.template import loader
 from django.http import HttpResponse, HttpResponseRedirect 
 from .models import Note
+from django.views import generic
 from django.urls import reverse
 
 # Create your views here.
 
-def main(request):
-	notes_list = Note.objects.all()
-	template = loader.get_template('notes/index.html')
+class IndexView(generic.ListView):
+	template_name = 'notes/index.html'
+	context_object_name = 'notes_list'
 
-	context = {
-	'notes_list': notes_list,
-	}
-	return HttpResponse(template.render(context, request))
+	def get_queryset(self):
+		return Note.objects.all()
+
 
 def editor(request, notes_id=None):
 	template = loader.get_template('notes/editor.html')
